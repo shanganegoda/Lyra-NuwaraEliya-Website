@@ -1,87 +1,118 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Camera, Home } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handle = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", handle, { passive: true });
+    return () => window.removeEventListener("scroll", handle);
+  }, []);
+
+  const linkClass = scrolled
+    ? "text-[#6b6861] hover:text-[#0f0e0c]"
+    : "text-white/80 hover:text-white";
 
   return (
-    <nav className="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-white/96 backdrop-blur-md border-b border-[#e8e6e1]"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+        <div className="flex justify-between items-center py-4">
+          <Link href="/" className="flex items-center">
             <Image
               src="/Lyra-Images/General/Lyra-Logo.png"
-              alt="Lyra Logo"
-              width={60}
-              height={60}
-              className="rounded-lg object-contain"
+              alt="Lyra"
+              width={44}
+              height={44}
+              className="object-contain"
             />
-            {/* <span className="font-playfair font-semibold text-xl text-dark">
-              Lyra | Nuwara Eliya
-            </span> */}
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop */}
+          <div className="hidden md:flex items-center gap-10">
             <Link
               href="/"
-              className="flex items-center space-x-1 text-secondary hover:text-primary transition-colors duration-200 font-inter"
+              className={`text-sm font-inter tracking-wide transition-colors duration-200 ${linkClass}`}
             >
-              <Home className="w-4 h-4" />
-              <span>Home</span>
+              Home
             </Link>
-
             <Link
               href="/gallery"
-              className="flex items-center space-x-1 text-secondary hover:text-primary transition-colors duration-200 font-inter"
+              className={`text-sm font-inter tracking-wide transition-colors duration-200 ${linkClass}`}
             >
-              <Camera className="w-4 h-4" />
-              <span>Gallery</span>
+              Gallery
+            </Link>
+            <Link
+              href="/availability"
+              className={`text-sm font-inter tracking-wide transition-colors duration-200 ${linkClass}`}
+            >
+              Availability
             </Link>
             <Link
               href="/contact"
-              className="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition-all duration-200 font-inter font-medium"
+              className={`text-sm font-inter font-medium tracking-wider px-6 py-2.5 border transition-all duration-300 ${
+                scrolled
+                  ? "border-[#a11d2b] text-[#a11d2b] hover:bg-[#a11d2b] hover:text-white"
+                  : "border-white/60 text-white hover:bg-white hover:text-[#0f0e0c]"
+              }`}
             >
-              Contact Us
+              Book Now
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            className={`md:hidden p-1.5 transition-colors ${
+              scrolled ? "text-[#0f0e0c]" : "text-white"
+            }`}
           >
-            {isOpen ? (
-              <X className="w-6 h-6 text-dark" />
-            ) : (
-              <Menu className="w-6 h-6 text-dark" />
-            )}
+            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile menu */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
-            <div className="flex flex-col space-y-4">
+          <div className="md:hidden bg-white border-t border-[#e8e6e1] py-7 px-2">
+            <div className="flex flex-col gap-6">
               <Link
-                href="/gallery"
-                className="flex items-center space-x-2 text-secondary hover:text-primary transition-colors duration-200 font-inter"
+                href="/"
+                className="text-sm font-inter text-[#6b6861] hover:text-[#0f0e0c] tracking-wide transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                <Camera className="w-4 h-4" />
-                <span>Gallery</span>
+                Home
+              </Link>
+              <Link
+                href="/gallery"
+                className="text-sm font-inter text-[#6b6861] hover:text-[#0f0e0c] tracking-wide transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Gallery
+              </Link>
+              <Link
+                href="/availability"
+                className="text-sm font-inter text-[#6b6861] hover:text-[#0f0e0c] tracking-wide transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Availability
               </Link>
               <Link
                 href="/contact"
-                className="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition-all duration-200 text-center font-inter font-medium"
+                className="text-sm font-inter font-medium border border-[#a11d2b] text-[#a11d2b] px-6 py-3 text-center hover:bg-[#a11d2b] hover:text-white transition-all duration-300"
                 onClick={() => setIsOpen(false)}
               >
-                Contact Us
+                Book Now
               </Link>
             </div>
           </div>

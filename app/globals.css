@@ -4,50 +4,47 @@
 
 :root {
   --primary: #a11d2b;
-  --secondary: #545454;
-  --dark: #222222;
-  --black: #000000;
-  --white: #ffffff;
+  --cream: #faf9f6;
+  --ink: #0f0e0c;
+  --ink-secondary: #6b6861;
+  --ink-muted: #a8a49e;
+  --border: #e8e6e1;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: var(--font-inter), sans-serif;
+  background-color: var(--cream);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
 }
 
-.font-heading {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-playfair), serif;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #8a1825;
-}
-
-/* Typography improvements */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-playfair), serif;
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 400;
+  line-height: 1.1;
 }
 
 p {
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-muted);
 }

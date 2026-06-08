@@ -1,557 +1,189 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
-const galleryCategories = [
-  { id: "all", name: "All Photos", count: 53 },
-  { id: "rooms", name: "Rooms", count: 21 },
-  { id: "exterior", name: "Villa Exterior", count: 10 },
-  { id: "interior", name: "Villa Interior", count: 10 },
-  // { id: "gardens", name: "Gardens", count: 3 },
-  // { id: "attractions", name: "Local Attractions", count: 4 },
-  { id: "nature", name: "Nature & Views", count: 12 },
+const categories = [
+  { id: "all",      label: "All",            count: 53 },
+  { id: "rooms",    label: "Rooms",          count: 21 },
+  { id: "exterior", label: "Exterior",       count: 10 },
+  { id: "interior", label: "Interior",       count: 10 },
+  { id: "nature",   label: "Nature & Views", count: 12 },
 ];
-const galleryImages = [
-  // Exterior (10)
-  {
-    id: 1,
-    src: "/lyra-images/Gallery-page/Exterior/1.jpg",
-    alt: "Exterior image 1",
-    category: "exterior",
-    title: "Exterior 1",
-  },
-  {
-    id: 2,
-    src: "/lyra-images/Gallery-page/Exterior/2.jpg",
-    alt: "Exterior image 2",
-    category: "exterior",
-    title: "Exterior 2",
-  },
-  {
-    id: 3,
-    src: "/lyra-images/Gallery-page/Exterior/3.jpg",
-    alt: "Exterior image 3",
-    category: "exterior",
-    title: "Exterior 3",
-  },
-  {
-    id: 4,
-    src: "/lyra-images/Gallery-page/Exterior/4.jpg",
-    alt: "Exterior image 4",
-    category: "exterior",
-    title: "Exterior 4",
-  },
-  {
-    id: 5,
-    src: "/lyra-images/Gallery-page/Exterior/5.jpg",
-    alt: "Exterior image 5",
-    category: "exterior",
-    title: "Exterior 5",
-  },
-  {
-    id: 6,
-    src: "/lyra-images/Gallery-page/Exterior/6.jpg",
-    alt: "Exterior image 6",
-    category: "exterior",
-    title: "Exterior 6",
-  },
-  {
-    id: 7,
-    src: "/lyra-images/Gallery-page/Exterior/7.jpg",
-    alt: "Exterior image 7",
-    category: "exterior",
-    title: "Exterior 7",
-  },
-  {
-    id: 8,
-    src: "/lyra-images/Gallery-page/Exterior/8.jpg",
-    alt: "Exterior image 8",
-    category: "exterior",
-    title: "Exterior 8",
-  },
-  {
-    id: 9,
-    src: "/lyra-images/Gallery-page/Exterior/9.jpg",
-    alt: "Exterior image 9",
-    category: "exterior",
-    title: "Exterior 9",
-  },
-  {
-    id: 10,
-    src: "/lyra-images/Gallery-page/Exterior/10.jpg",
-    alt: "Exterior image 10",
-    category: "exterior",
-    title: "Exterior 10",
-  },
 
-  // Interior (10)
-  {
-    id: 11,
-    src: "/lyra-images/Gallery-page/Interior/1.jpg",
-    alt: "Interior image 1",
-    category: "interior",
-    title: "Interior 1",
-  },
-  {
-    id: 12,
-    src: "/lyra-images/Gallery-page/Interior/2.jpg",
-    alt: "Interior image 2",
-    category: "interior",
-    title: "Interior 2",
-  },
-  {
-    id: 13,
-    src: "/lyra-images/Gallery-page/Interior/3.jpg",
-    alt: "Interior image 3",
-    category: "interior",
-    title: "Interior 3",
-  },
-  {
-    id: 14,
-    src: "/lyra-images/Gallery-page/Interior/4.jpg",
-    alt: "Interior image 4",
-    category: "interior",
-    title: "Interior 4",
-  },
-  {
-    id: 15,
-    src: "/lyra-images/Gallery-page/Interior/5.jpg",
-    alt: "Interior image 5",
-    category: "interior",
-    title: "Interior 5",
-  },
-  {
-    id: 16,
-    src: "/lyra-images/Gallery-page/Interior/6.jpg",
-    alt: "Interior image 6",
-    category: "interior",
-    title: "Interior 6",
-  },
-  {
-    id: 17,
-    src: "/lyra-images/Gallery-page/Interior/7.jpg",
-    alt: "Interior image 7",
-    category: "interior",
-    title: "Interior 7",
-  },
-  {
-    id: 18,
-    src: "/lyra-images/Gallery-page/Interior/8.jpg",
-    alt: "Interior image 8",
-    category: "interior",
-    title: "Interior 8",
-  },
-  {
-    id: 19,
-    src: "/lyra-images/Gallery-page/Interior/9.jpg",
-    alt: "Interior image 9",
-    category: "interior",
-    title: "Interior 9",
-  },
-  {
-    id: 20,
-    src: "/lyra-images/Gallery-page/Interior/10.jpg",
-    alt: "Interior image 10",
-    category: "interior",
-    title: "Interior 10",
-  },
+// Build image list using correct case-sensitive paths
+const exteriorExts = ["jpg","jpg","JPG","JPG","JPG","JPG","JPG","JPG","JPG","JPG"];
+const natureExts   = ["jpg","JPG","JPG","JPG","JPG","jpg","JPG","JPG","JPG","jpg","jpg","jpg"];
 
-  // Nature and View (12)
-  {
-    id: 21,
-    src: "/lyra-images/Gallery-page/NatureAndView/1.jpg",
-    alt: "Nature and view image 1",
+const images = [
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    src: `/Lyra-Images/Gallery-Page/Exterior/${i + 1}.${exteriorExts[i]}`,
+    category: "exterior",
+    title: `Exterior ${i + 1}`,
+  })),
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: i + 11,
+    src: `/Lyra-Images/Gallery-Page/Interior/${i + 1}.JPG`,
+    category: "interior",
+    title: `Interior ${i + 1}`,
+  })),
+  ...Array.from({ length: 12 }, (_, i) => ({
+    id: i + 21,
+    src: `/Lyra-Images/Gallery-Page/NatureAndView/${i + 1}.${natureExts[i]}`,
     category: "nature",
-    title: "Nature 1",
-  },
-  {
-    id: 22,
-    src: "/lyra-images/Gallery-page/NatureAndView/2.jpg",
-    alt: "Nature and view image 2",
-    category: "nature",
-    title: "Nature 2",
-  },
-  {
-    id: 23,
-    src: "/lyra-images/Gallery-page/NatureAndView/3.jpg",
-    alt: "Nature and view image 3",
-    category: "nature",
-    title: "Nature 3",
-  },
-  {
-    id: 24,
-    src: "/lyra-images/Gallery-page/NatureAndView/4.jpg",
-    alt: "Nature and view image 4",
-    category: "nature",
-    title: "Nature 4",
-  },
-  {
-    id: 25,
-    src: "/lyra-images/Gallery-page/NatureAndView/5.jpg",
-    alt: "Nature and view image 5",
-    category: "nature",
-    title: "Nature 5",
-  },
-  {
-    id: 26,
-    src: "/lyra-images/Gallery-page/NatureAndView/6.jpg",
-    alt: "Nature and view image 6",
-    category: "nature",
-    title: "Nature 6",
-  },
-  {
-    id: 27,
-    src: "/lyra-images/Gallery-page/NatureAndView/7.jpg",
-    alt: "Nature and view image 7",
-    category: "nature",
-    title: "Nature 7",
-  },
-  {
-    id: 28,
-    src: "/lyra-images/Gallery-page/NatureAndView/8.jpg",
-    alt: "Nature and view image 8",
-    category: "nature",
-    title: "Nature 8",
-  },
-  {
-    id: 29,
-    src: "/lyra-images/Gallery-page/NatureAndView/9.jpg",
-    alt: "Nature and view image 9",
-    category: "nature",
-    title: "Nature 9",
-  },
-  {
-    id: 30,
-    src: "/lyra-images/Gallery-page/NatureAndView/10.jpg",
-    alt: "Nature and view image 10",
-    category: "nature",
-    title: "Nature 10",
-  },
-  {
-    id: 31,
-    src: "/lyra-images/Gallery-page/NatureAndView/11.jpg",
-    alt: "Nature and view image 11",
-    category: "nature",
-    title: "Nature 11",
-  },
-  {
-    id: 32,
-    src: "/lyra-images/Gallery-page/NatureAndView/12.jpg",
-    alt: "Nature and view image 12",
-    category: "nature",
-    title: "Nature 12",
-  },
-
-  // Rooms (21)
-  {
-    id: 33,
-    src: "/lyra-images/Gallery-page/Rooms/1.jpg",
-    alt: "Room image 1",
+    title: `Nature & Views ${i + 1}`,
+  })),
+  ...Array.from({ length: 21 }, (_, i) => ({
+    id: i + 33,
+    src: `/Lyra-Images/Gallery-Page/Rooms/${i + 1}.JPG`,
     category: "rooms",
-    title: "Room 1",
-  },
-  {
-    id: 34,
-    src: "/lyra-images/Gallery-page/Rooms/2.jpg",
-    alt: "Room image 2",
-    category: "rooms",
-    title: "Room 2",
-  },
-  {
-    id: 35,
-    src: "/lyra-images/Gallery-page/Rooms/3.jpg",
-    alt: "Room image 3",
-    category: "rooms",
-    title: "Room 3",
-  },
-  {
-    id: 36,
-    src: "/lyra-images/Gallery-page/Rooms/4.jpg",
-    alt: "Room image 4",
-    category: "rooms",
-    title: "Room 4",
-  },
-  {
-    id: 37,
-    src: "/lyra-images/Gallery-page/Rooms/5.jpg",
-    alt: "Room image 5",
-    category: "rooms",
-    title: "Room 5",
-  },
-  {
-    id: 38,
-    src: "/lyra-images/Gallery-page/Rooms/6.jpg",
-    alt: "Room image 6",
-    category: "rooms",
-    title: "Room 6",
-  },
-  {
-    id: 39,
-    src: "/lyra-images/Gallery-page/Rooms/7.jpg",
-    alt: "Room image 7",
-    category: "rooms",
-    title: "Room 7",
-  },
-  {
-    id: 40,
-    src: "/lyra-images/Gallery-page/Rooms/8.jpg",
-    alt: "Room image 8",
-    category: "rooms",
-    title: "Room 8",
-  },
-  {
-    id: 41,
-    src: "/lyra-images/Gallery-page/Rooms/9.jpg",
-    alt: "Room image 9",
-    category: "rooms",
-    title: "Room 9",
-  },
-  {
-    id: 42,
-    src: "/lyra-images/Gallery-page/Rooms/10.jpg",
-    alt: "Room image 10",
-    category: "rooms",
-    title: "Room 10",
-  },
-  {
-    id: 43,
-    src: "/lyra-images/Gallery-page/Rooms/11.jpg",
-    alt: "Room image 11",
-    category: "rooms",
-    title: "Room 11",
-  },
-  {
-    id: 44,
-    src: "/lyra-images/Gallery-page/Rooms/12.jpg",
-    alt: "Room image 12",
-    category: "rooms",
-    title: "Room 12",
-  },
-  {
-    id: 45,
-    src: "/lyra-images/Gallery-page/Rooms/13.jpg",
-    alt: "Room image 13",
-    category: "rooms",
-    title: "Room 13",
-  },
-  {
-    id: 46,
-    src: "/lyra-images/Gallery-page/Rooms/14.jpg",
-    alt: "Room image 14",
-    category: "rooms",
-    title: "Room 14",
-  },
-  {
-    id: 47,
-    src: "/lyra-images/Gallery-page/Rooms/15.jpg",
-    alt: "Room image 15",
-    category: "rooms",
-    title: "Room 15",
-  },
-  {
-    id: 48,
-    src: "/lyra-images/Gallery-page/Rooms/16.jpg",
-    alt: "Room image 16",
-    category: "rooms",
-    title: "Room 16",
-  },
-  {
-    id: 49,
-    src: "/lyra-images/Gallery-page/Rooms/17.jpg",
-    alt: "Room image 17",
-    category: "rooms",
-    title: "Room 17",
-  },
-  {
-    id: 50,
-    src: "/lyra-images/Gallery-page/Rooms/18.jpg",
-    alt: "Room image 18",
-    category: "rooms",
-    title: "Room 18",
-  },
-  {
-    id: 51,
-    src: "/lyra-images/Gallery-page/Rooms/19.jpg",
-    alt: "Room image 19",
-    category: "rooms",
-    title: "Room 19",
-  },
-  {
-    id: 52,
-    src: "/lyra-images/Gallery-page/Rooms/20.jpg",
-    alt: "Room image 20",
-    category: "rooms",
-    title: "Room 20",
-  },
-  {
-    id: 53,
-    src: "/lyra-images/Gallery-page/Rooms/21.jpg",
-    alt: "Room image 21",
-    category: "rooms",
-    title: "Room 21",
-  },
+    title: `Room ${i + 1}`,
+  })),
 ];
+
 
 export default function GallerySection() {
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [lightboxImage, setLightboxImage] = useState<number | null>(null);
+  const [active,   setActive]   = useState("all");
+  const [lightbox, setLightbox] = useState<number | null>(null);
 
-  const filteredImages =
-    activeCategory === "all"
-      ? galleryImages
-      : galleryImages.filter((image) => image.category === activeCategory);
+  const filtered = active === "all" ? images : images.filter((i) => i.category === active);
+  const lbIdx    = lightbox !== null ? filtered.findIndex((i) => i.id === lightbox) : -1;
 
-  const openLightbox = (imageId: number) => {
-    setLightboxImage(imageId);
-  };
+  const closeLb = () => setLightbox(null);
+  const prevLb  = useCallback(() => {
+    if (lbIdx > 0) setLightbox(filtered[lbIdx - 1].id);
+  }, [lbIdx, filtered]);
+  const nextLb  = useCallback(() => {
+    if (lbIdx < filtered.length - 1) setLightbox(filtered[lbIdx + 1].id);
+  }, [lbIdx, filtered]);
 
-  const closeLightbox = () => {
-    setLightboxImage(null);
-  };
-
-  const navigateLightbox = (direction: "prev" | "next") => {
-    if (lightboxImage === null) return;
-
-    const currentIndex = filteredImages.findIndex(
-      (img) => img.id === lightboxImage
-    );
-    let newIndex;
-
-    if (direction === "prev") {
-      newIndex =
-        currentIndex > 0 ? currentIndex - 1 : filteredImages.length - 1;
-    } else {
-      newIndex =
-        currentIndex < filteredImages.length - 1 ? currentIndex + 1 : 0;
-    }
-
-    setLightboxImage(filteredImages[newIndex].id);
-  };
-
-  const currentLightboxImage = lightboxImage
-    ? filteredImages.find((img) => img.id === lightboxImage)
-    : null;
+  useEffect(() => {
+    if (lightbox === null) return;
+    const h = (e: KeyboardEvent) => {
+      if (e.key === "Escape")     closeLb();
+      if (e.key === "ArrowLeft")  prevLb();
+      if (e.key === "ArrowRight") nextLb();
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [lightbox, prevLb, nextLb]);
 
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl lg:text-5xl font-bold text-dark mb-4 font-playfair">
+    <>
+      {/* Page header */}
+      <section className="pt-36 pb-14 bg-[#faf9f6]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <p className="text-[#a11d2b] text-[10px] tracking-[0.35em] uppercase font-inter mb-5">
+            Visual Tour
+          </p>
+          <h1 className="font-playfair text-5xl md:text-6xl text-[#0f0e0c] mb-6">
             Photo Gallery
           </h1>
-          <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="text-xl text-secondary max-w-3xl mx-auto font-inter">
-            Discover the beauty of Serenity Villa and the enchanting landscapes
-            of Nuwara Eliya through our curated collection of photographs.
+          <p className="font-inter text-[#6b6861] text-base max-w-xl leading-relaxed">
+            Discover the beauty of Lyra and the enchanting landscapes of Nuwara
+            Eliya through our curated collection of photographs.
           </p>
         </div>
+      </section>
 
-        {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {galleryCategories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-200 font-playfair ${
-                activeCategory === category.id
-                  ? "bg-primary text-white shadow-lg"
-                  : "bg-gray-100 text-secondary hover:bg-gray-200"
-              }`}
-            >
-              {category.name}
-              <span className="ml-2 text-sm opacity-75">
-                ({category.count})
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredImages.map((image) => (
-            <div
-              key={image.id}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
-              onClick={() => openLightbox(image.id)}
-            >
-              <div className="aspect-square relative">
-                <Image
-                  src={image.src || "/placeholder.svg"}
-                  alt={image.alt}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="text-white font-semibold text-lg font-playfair">
-                    {image.title}
-                  </h3>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Results Count */}
-        <div className="text-center mt-12">
-          <p className="text-secondary font-inter">
-            Showing {filteredImages.length} of {galleryImages.length} photos
-          </p>
+      {/* Filter tabs */}
+      <div className="bg-[#faf9f6] border-b border-[#e8e6e1] sticky top-[57px] z-40">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="flex items-center gap-8 overflow-x-auto">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActive(cat.id)}
+                className={`py-4 text-sm font-inter whitespace-nowrap border-b-2 transition-all duration-200 ${
+                  active === cat.id
+                    ? "border-[#a11d2b] text-[#0f0e0c]"
+                    : "border-transparent text-[#a8a49e] hover:text-[#6b6861]"
+                }`}
+              >
+                {cat.label}
+                <span className="ml-1.5 text-[10px] opacity-50">({cat.count})</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Lightbox Modal */}
-      {lightboxImage && currentLightboxImage && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-          <div className="relative max-w-4xl max-h-full">
-            {/* Close Button */}
-            <button
-              onClick={closeLightbox}
-              className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors duration-200"
-            >
-              <X className="w-6 h-6 text-white" />
-            </button>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={() => navigateLightbox("prev")}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors duration-200"
-            >
-              <ChevronLeft className="w-6 h-6 text-white" />
-            </button>
-            <button
-              onClick={() => navigateLightbox("next")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors duration-200"
-            >
-              <ChevronRight className="w-6 h-6 text-white" />
-            </button>
-
-            {/* Image */}
-            <div className="relative">
-              <Image
-                src={currentLightboxImage.src || "/placeholder.svg"}
-                alt={currentLightboxImage.alt}
-                width={800}
-                height={600}
-                className="max-w-full max-h-[80vh] object-contain rounded-lg"
-              />
-
-              {/* Image Info */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 rounded-b-lg">
-                <h3 className="text-white text-xl font-semibold mb-2 font-playfair">
-                  {currentLightboxImage.title}
-                </h3>
-                <p className="text-white/80 text-sm font-inter">
-                  {currentLightboxImage.alt}
-                </p>
-              </div>
-            </div>
+      {/* Photo grid */}
+      <section className="bg-white py-8">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5">
+            {filtered.map((img, i) => {
+              const isWide = i % 7 === 3;
+              return (
+                <div
+                  key={img.id}
+                  className={`overflow-hidden cursor-pointer group ${isWide ? "col-span-2" : "col-span-1"}`}
+                  onClick={() => setLightbox(img.id)}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img.src}
+                    alt={img.title}
+                    className={`w-full object-cover group-hover:scale-[1.04] transition-transform duration-700 ${
+                      isWide ? "aspect-[2/1]" : "aspect-square"
+                    }`}
+                  />
+                </div>
+              );
+            })}
           </div>
+          <p className="font-inter text-xs text-[#a8a49e] text-center mt-8 tracking-wide">
+            Showing {filtered.length} of {images.length} photographs
+          </p>
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      {lightbox !== null && lbIdx >= 0 && (
+        <div
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          onClick={closeLb}
+        >
+          <button onClick={closeLb} className="absolute top-5 right-5 text-white/50 hover:text-white transition-colors z-10">
+            <X className="w-6 h-6" />
+          </button>
+
+          <p className="absolute top-5 left-5 font-inter text-xs text-white/35 tracking-widest">
+            {String(lbIdx + 1).padStart(2,"0")} / {String(filtered.length).padStart(2,"0")}
+          </p>
+
+          <button
+            onClick={(e) => { e.stopPropagation(); prevLb(); }}
+            disabled={lbIdx === 0}
+            className="absolute left-4 text-white/40 hover:text-white transition-colors disabled:opacity-20"
+          >
+            <ChevronLeft className="w-8 h-8" />
+          </button>
+
+          <div className="max-w-5xl max-h-[88vh] px-16" onClick={(e) => e.stopPropagation()}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={filtered[lbIdx].src}
+              alt={filtered[lbIdx].title}
+              className="max-h-[88vh] max-w-full w-auto object-contain mx-auto"
+            />
+          </div>
+
+          <button
+            onClick={(e) => { e.stopPropagation(); nextLb(); }}
+            disabled={lbIdx === filtered.length - 1}
+            className="absolute right-4 text-white/40 hover:text-white transition-colors disabled:opacity-20"
+          >
+            <ChevronRight className="w-8 h-8" />
+          </button>
+
+          <p className="absolute bottom-5 left-1/2 -translate-x-1/2 font-inter text-xs text-white/30 tracking-widest">
+            {filtered[lbIdx].title}
+          </p>
         </div>
       )}
-    </section>
+    </>
   );
 }

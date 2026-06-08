@@ -1,131 +1,115 @@
 import Image from "next/image";
-import { Clock, MapPin, Car } from "lucide-react";
+import { MapPin, Clock } from "lucide-react";
 
-const proximityData = [
+const locations = [
   {
     name: "Gregory Lake",
-    description: "Scenic lake perfect for boating and picnics",
-    image: "/lyra-images/images-proximityandaccess/1.jpg?height=300&width=400",
+    description: "Scenic lake perfect for boating and leisurely picnics",
+    image: "/Lyra-Images/Images-ProximityAndAccess/1.jpg",
     distance: "2.5 km",
-    time: "5 min drive",
+    time: "5 min",
     type: "Recreation",
   },
   {
     name: "Nuwara Eliya Golf Club",
-    description: "Historic 18-hole golf course with mountain views",
-    image: "/lyra-images/images-proximityandaccess/2.jpg?height=300&width=400",
+    description: "Historic 18-hole course with sweeping mountain views",
+    image: "/Lyra-Images/Images-ProximityAndAccess/2.jpg",
     distance: "3.2 km",
-    time: "7 min drive",
+    time: "7 min",
     type: "Sports",
   },
   {
     name: "Victoria Park",
-    description: "Beautiful botanical garden in the city center",
-    image: "/lyra-images/images-proximityandaccess/3.jpg?height=300&width=400",
+    description: "Beautiful botanical garden in the heart of the city",
+    image: "/Lyra-Images/Images-ProximityAndAccess/3.jpg",
     distance: "4.1 km",
-    time: "8 min drive",
+    time: "8 min",
     type: "Nature",
   },
   {
     name: "Tea Factory & Museum",
-    description: "Learn about Sri Lankan tea production",
-    image: "/lyra-images/images-proximityandaccess/4.jpg?height=300&width=400",
+    description: "Explore the rich history of Sri Lankan tea production",
+    image: "/Lyra-Images/Images-ProximityAndAccess/4.jpg",
     distance: "1.8 km",
-    time: "4 min drive",
+    time: "4 min",
     type: "Culture",
   },
   {
     name: "Hakgala Botanical Garden",
-    description: "Stunning botanical garden with rare plants",
-    image: "/lyra-images/images-proximityandaccess/5.webp?height=300&width=400",
+    description: "Stunning garden home to rare and exotic plant species",
+    image: "/Lyra-Images/Images-ProximityAndAccess/5.webp",
     distance: "8.5 km",
-    time: "15 min drive",
+    time: "15 min",
     type: "Nature",
   },
   {
     name: "Seetha Amman Temple",
-    description: "Historic Hindu temple with cultural significance",
-    image: "/lyra-images/images-proximityandaccess/6.jpg?height=300&width=400",
+    description: "A historic Hindu temple of deep cultural significance",
+    image: "/Lyra-Images/Images-ProximityAndAccess/6.jpg",
     distance: "9.2 km",
-    time: "18 min drive",
+    time: "18 min",
     type: "Culture",
   },
 ];
 
 export default function ProximitySection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-dark mb-4 font-playfair">
-            Proximity & Access
-          </h2>
-          <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="text-xl text-secondary max-w-3xl mx-auto font-inter">
-            Strategically located to give you easy access to Nuwara Eliya's most
-            beloved attractions and experiences. Everything you need is just
-            minutes away.
+    <section id="proximity" className="py-28 lg:py-40 bg-[#faf9f6]">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 gap-6">
+          <div>
+            <p className="text-[#a11d2b] text-[10px] tracking-[0.35em] uppercase font-inter mb-4">
+              Location
+            </p>
+            <h2 className="font-playfair text-4xl md:text-5xl text-[#0f0e0c]">Proximity & Access</h2>
+          </div>
+          <p className="font-inter text-[#6b6861] text-sm leading-relaxed max-w-xs">
+            Strategically placed at the heart of Nuwara Eliya's most beloved experiences.
           </p>
         </div>
 
+        {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {proximityData.map((location, index) => (
+          {locations.map((loc, i) => (
             <div
-              key={index}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
+              key={i}
+              className="group bg-white border border-[#e8e6e1] overflow-hidden hover:border-[#a8a49e] transition-colors duration-400"
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-44 overflow-hidden">
                 <Image
-                  src={location.image || "/placeholder.svg"}
-                  alt={location.name}
+                  src={loc.image}
+                  alt={loc.name}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover group-hover:scale-[1.04] transition-transform duration-700"
                 />
-                <div className="absolute top-3 left-3 bg-primary text-white px-3 py-1 rounded-full text-sm font-medium font-playfair">
-                  {location.type}
-                </div>
               </div>
-
               <div className="p-6">
-                <h3 className="text-xl font-bold text-dark mb-2 font-playfair">
-                  {location.name}
-                </h3>
-                <p className="text-secondary mb-4 text-sm leading-relaxed font-inter">
-                  {location.description}
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="font-playfair text-lg text-[#0f0e0c]">{loc.name}</h3>
+                  <span className="text-[9px] tracking-[0.2em] uppercase text-[#a8a49e] font-inter ml-3 mt-1 flex-shrink-0">
+                    {loc.type}
+                  </span>
+                </div>
+                <p className="font-inter text-[#6b6861] text-sm mb-5 leading-relaxed">
+                  {loc.description}
                 </p>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-1 text-secondary">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-sm font-medium font-inter">
-                        {location.distance}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-1 text-secondary">
-                      <Clock className="w-4 h-4" />
-                      <span className="text-sm font-medium font-inter">
-                        {location.time}
-                      </span>
-                    </div>
-                  </div>
-                  <Car className="w-5 h-5 text-primary" />
+                <div className="flex items-center gap-5 text-xs text-[#a8a49e] font-inter">
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-3 h-3" />
+                    {loc.distance}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="w-3 h-3" />
+                    {loc.time} by car
+                  </span>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* <div className="mt-12 text-center">
-          <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold text-dark mb-4 font-playfair">Perfect Location for Exploration</h3>
-            <p className="text-secondary leading-relaxed font-inter">
-              Our villa's prime location puts you at the center of Nuwara Eliya's attractions. Whether you're interested
-              in nature, culture, recreation, or adventure, everything is within easy reach. We provide detailed
-              directions and can arrange transportation to help you make the most of your stay.
-            </p>
-          </div>
-        </div> */}
       </div>
     </section>
   );

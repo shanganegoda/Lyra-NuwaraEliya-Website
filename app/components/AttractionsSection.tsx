@@ -7,150 +7,144 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const attractions = [
   {
     name: "Horton Plains National Park",
-    image: "/lyra-images/images-nearbyattractions/1.jpg?height=400&width=600",
+    image: "/Lyra-Images/Images-NearbyAttractions/1.jpg",
     description: "Famous for World's End cliff and Baker's Falls",
   },
   {
     name: "Pedro Tea Estate",
-    image: "/lyra-images/images-nearbyattractions/2.jpg?height=400&width=600",
+    image: "/Lyra-Images/Images-NearbyAttractions/2.jpg",
     description: "Historic tea plantation with guided tours",
   },
   {
     name: "Single Tree Hill",
-    image: "/lyra-images/images-nearbyattractions/3.png?height=400&width=600",
+    image: "/Lyra-Images/Images-NearbyAttractions/3.png",
     description: "Panoramic views of the entire Nuwara Eliya region",
   },
   {
     name: "Lover's Leap Waterfall",
-    image: "/lyra-images/images-nearbyattractions/4.webp?height=400&width=600",
-    description: "Romantic waterfall with hiking trails",
+    image: "/Lyra-Images/Images-NearbyAttractions/4.webp",
+    description: "Romantic waterfall with scenic hiking trails",
   },
   {
     name: "Ambewela Farm",
-    image: "/lyra-images/images-nearbyattractions/5.webp?height=400&width=600",
+    image: "/Lyra-Images/Images-NearbyAttractions/5.webp",
     description: "New Zealand-style dairy farm experience",
   },
   {
     name: "Moon Plains",
-    image: "/lyra-images/images-nearbyattractions/6.jpg?height=400&width=600",
+    image: "/Lyra-Images/Images-NearbyAttractions/6.jpg",
     description: "Vast grassland plateau perfect for photography",
   },
 ];
 
 export default function AttractionsSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const itemsPerSlide = 3;
+  const [active, setActive] = useState(0);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) =>
-      prev + itemsPerSlide >= attractions.length ? 0 : prev + itemsPerSlide
-    );
-  };
+  const prev = () => setActive((p) => (p - 1 + attractions.length) % attractions.length);
+  const next = () => setActive((p) => (p + 1) % attractions.length);
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) =>
-      prev === 0
-        ? Math.max(0, attractions.length - itemsPerSlide)
-        : prev - itemsPerSlide
-    );
-  };
-
-  const visibleAttractions = attractions.slice(
-    currentSlide,
-    currentSlide + itemsPerSlide
-  );
+  const secondary1 = (active + 1) % attractions.length;
+  const secondary2 = (active + 2) % attractions.length;
 
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-dark mb-4 font-playfair">
-            Nearby Attractions
-          </h2>
-          <div className="w-24 h-1 bg-primary mx-auto mb-6"></div>
-          <p className="text-xl text-secondary max-w-3xl mx-auto font-inter">
-            Discover the natural wonders and cultural treasures that make Nuwara
-            Eliya one of Sri Lanka's most enchanting destinations. From misty
-            mountains to cascading waterfalls, adventure awaits at every turn.
-          </p>
+    <section id="attractions" className="py-28 lg:py-40 bg-white">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10">
+
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 gap-6">
+          <div>
+            <p className="text-[#a11d2b] text-[10px] tracking-[0.35em] uppercase font-inter mb-4">
+              Explore
+            </p>
+            <h2 className="font-playfair text-4xl md:text-5xl text-[#0f0e0c]">Nearby Attractions</h2>
+          </div>
+          {/* Nav arrows */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={prev}
+              className="w-10 h-10 border border-[#e8e6e1] flex items-center justify-center hover:border-[#0f0e0c] transition-colors"
+              aria-label="Previous"
+            >
+              <ChevronLeft className="w-4 h-4 text-[#6b6861]" />
+            </button>
+            <button
+              onClick={next}
+              className="w-10 h-10 border border-[#e8e6e1] flex items-center justify-center hover:border-[#0f0e0c] transition-colors"
+              aria-label="Next"
+            >
+              <ChevronRight className="w-4 h-4 text-[#6b6861]" />
+            </button>
+          </div>
         </div>
 
-        <div className="relative">
-          {/* Carousel Container */}
-          <div className="overflow-hidden">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {visibleAttractions.map((attraction, index) => (
-                <div
-                  key={currentSlide + index}
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={attraction.image || "/placeholder.svg"}
-                      alt={attraction.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <h3 className="text-xl font-bold text-white mb-2 font-playfair">
-                        {attraction.name}
-                      </h3>
-                      <p className="text-white/90 text-sm font-inter">
-                        {attraction.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+        {/* Featured + secondary grid */}
+        <div className="grid lg:grid-cols-2 gap-px bg-[#e8e6e1] mb-px">
+          {/* Main featured */}
+          <div
+            className="relative h-[480px] bg-[#faf9f6] overflow-hidden group cursor-pointer"
+            onClick={next}
+          >
+            <Image
+              src={attractions[active].image}
+              alt={attractions[active].name}
+              fill
+              className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-8">
+              <p className="font-inter text-white/50 text-[10px] tracking-[0.25em] uppercase mb-3">
+                {String(active + 1).padStart(2, "0")} / {String(attractions.length).padStart(2, "0")}
+              </p>
+              <h3 className="font-playfair text-3xl text-white mb-2">
+                {attractions[active].name}
+              </h3>
+              <p className="font-inter text-white/75 text-sm">{attractions[active].description}</p>
             </div>
           </div>
 
-          {/* Navigation Buttons */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white shadow-lg hover:shadow-xl p-3 rounded-full transition-all duration-200 z-10"
-            disabled={currentSlide === 0}
-          >
-            <ChevronLeft className="w-6 h-6 text-dark" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white shadow-lg hover:shadow-xl p-3 rounded-full transition-all duration-200 z-10"
-            disabled={currentSlide + itemsPerSlide >= attractions.length}
-          >
-            <ChevronRight className="w-6 h-6 text-dark" />
-          </button>
-
-          {/* Dots Indicator */}
-          <div className="flex justify-center mt-8 space-x-2">
-            {Array.from({
-              length: Math.ceil(attractions.length / itemsPerSlide),
-            }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index * itemsPerSlide)}
-                className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                  Math.floor(currentSlide / itemsPerSlide) === index
-                    ? "bg-primary"
-                    : "bg-gray-300"
-                }`}
-              />
+          {/* Two secondary */}
+          <div className="grid grid-rows-2 gap-px bg-[#e8e6e1]">
+            {[secondary1, secondary2].map((idx) => (
+              <div
+                key={idx}
+                className="relative h-[238px] bg-[#faf9f6] overflow-hidden group cursor-pointer"
+                onClick={() => setActive(idx)}
+              >
+                <Image
+                  src={attractions[idx].image}
+                  alt={attractions[idx].name}
+                  fill
+                  className="object-cover group-hover:scale-[1.04] transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <h3 className="font-playfair text-xl text-white">{attractions[idx].name}</h3>
+                  <p className="font-inter text-white/65 text-xs mt-1">{attractions[idx].description}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Additional Info */}
-        {/* <div className="mt-16 bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-dark mb-4 font-playfair">Curated Experiences Await</h3>
-            <p className="text-secondary max-w-3xl mx-auto leading-relaxed font-inter">
-              Our team can help arrange guided tours, transportation, and special experiences to these incredible
-              attractions. From sunrise hikes to tea tasting sessions, we'll help you create unforgettable memories
-              during your stay at Serenity Villa.
-            </p>
-          </div>
-        </div> */}
+        {/* Thumbnail strip */}
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-px bg-[#e8e6e1]">
+          {attractions.map((a, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`relative h-20 overflow-hidden transition-opacity duration-300 ${
+                i === active ? "opacity-100" : "opacity-45 hover:opacity-75"
+              }`}
+              aria-label={`View ${a.name}`}
+            >
+              <Image src={a.image} alt={a.name} fill className="object-cover" />
+              {i === active && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#a11d2b]" />
+              )}
+            </button>
+          ))}
+        </div>
+
       </div>
     </section>
   );
