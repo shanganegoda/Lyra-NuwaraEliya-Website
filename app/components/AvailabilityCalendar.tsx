@@ -1,39 +1,17 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+// listing tabs removed — showing Complete Villa only
 import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 
-// ─── Listings ─────────────────────────────────────────────────────────────────
-const listings = [
-  {
-    id: "villa",
-    label: "Complete Villa",
-    tag: "Most Popular",
-    desc: "The full villa — all three rooms, entire property exclusively yours.",
-    capacity: "Up to 12 guests",
-  },
-  {
-    id: "night",
-    label: "Night Lily",
-    tag: "Mountain Suite",
-    desc: "Panoramic mountain views, king-size bed, private balcony.",
-    capacity: "Up to 4 guests",
-  },
-  {
-    id: "timber",
-    label: "Timber Lily",
-    tag: "Tea Garden Room",
-    desc: "Direct tea garden views, queen bed, traditional décor.",
-    capacity: "Up to 2 guests",
-  },
-  {
-    id: "white",
-    label: "White Lily",
-    tag: "Family Suite",
-    desc: "Multiple beds, generous seating area, perfect for families.",
-    capacity: "Up to 4 guests",
-  },
-];
+// ─── Listing ──────────────────────────────────────────────────────────────────
+const VILLA = {
+  id: "villa",
+  label: "Complete Villa",
+  tag: "Entire Property",
+  desc: "The full villa — all three rooms, entire property exclusively yours.",
+  capacity: "Up to 12 guests",
+};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -143,19 +121,16 @@ function MonthGrid({
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function AvailabilityCalendar() {
   const today       = new Date();
-  const [listing, setListing]   = useState("villa");
   const [offset,  setOffset]    = useState(0);          // months from today
   const [booked,  setBooked]    = useState<{ start: string; end: string }[]>([]);
   const [loading, setLoading]   = useState(true);
-  const [isPlaceholder, setIsPlaceholder] = useState(false);
 
-  const fetchBooked = useCallback(async (listingId: string) => {
+  const fetchBooked = useCallback(async () => {
     setLoading(true);
     try {
-      const res  = await fetch(`/api/availability?listing=${listingId}`);
+      const res  = await fetch(`/api/availability?listing=villa`);
       const data = await res.json();
       setBooked(data.bookedDates ?? []);
-      setIsPlaceholder(data.placeholder ?? false);
     } catch {
       setBooked([]);
     } finally {
@@ -163,16 +138,14 @@ export default function AvailabilityCalendar() {
     }
   }, []);
 
-  useEffect(() => { fetchBooked(listing); }, [listing, fetchBooked]);
+  useEffect(() => { fetchBooked(); }, [fetchBooked]);
 
   // Two months to display
   const m1 = new Date(today.getFullYear(), today.getMonth() + offset, 1);
   const m2 = new Date(today.getFullYear(), today.getMonth() + offset + 1, 1);
 
   const canGoPrev = offset > 0;
-  const canGoNext = offset < 10;
-
-  const activeListing = listings.find((l) => l.id === listing)!;
+  const canGoNext = offset < 10;;
 
   return (
     <>
@@ -193,49 +166,23 @@ export default function AvailabilityCalendar() {
         </div>
       </section>
 
-      {/* ── Listing tabs ── */}
-      <section className="bg-[#faf9f6] border-b border-[#e8e6e1] sticky top-[57px] z-40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="flex items-center gap-1 overflow-x-auto">
-            {listings.map((l) => (
-              <button
-                key={l.id}
-                onClick={() => setListing(l.id)}
-                className={`py-4 px-5 text-sm font-inter whitespace-nowrap border-b-2 transition-all duration-200 flex items-center gap-2 ${
-                  listing === l.id
-                    ? "border-[#a11d2b] text-[#0f0e0c]"
-                    : "border-transparent text-[#a8a49e] hover:text-[#6b6861]"
-                }`}
-              >
-                {l.label}
-                {l.tag === "Most Popular" && (
-                  <span className="hidden sm:inline text-[9px] tracking-wider bg-[#a11d2b] text-white px-1.5 py-0.5">
-                    POPULAR
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── Listing info strip ── */}
       <section className="bg-white border-b border-[#e8e6e1] py-5">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10">
           <div className="flex-1">
             <p className="font-inter text-[10px] text-[#a8a49e] tracking-[0.2em] uppercase mb-1">
-              {activeListing.tag}
+              {VILLA.tag}
             </p>
-            <p className="font-playfair text-xl text-[#0f0e0c]">{activeListing.label}</p>
-            <p className="font-inter text-sm text-[#6b6861] mt-0.5">{activeListing.desc}</p>
+            <p className="font-playfair text-xl text-[#0f0e0c]">{VILLA.label}</p>
+            <p className="font-inter text-sm text-[#6b6861] mt-0.5">{VILLA.desc}</p>
           </div>
           <div className="flex items-center gap-6">
             <div>
               <p className="font-inter text-[10px] text-[#a8a49e] tracking-widest uppercase mb-1">Capacity</p>
-              <p className="font-inter text-sm text-[#0f0e0c]">{activeListing.capacity}</p>
+              <p className="font-inter text-sm text-[#0f0e0c]">{VILLA.capacity}</p>
             </div>
             <button
-              onClick={() => fetchBooked(listing)}
+              onClick={fetchBooked}
               disabled={loading}
               className="text-[#a8a49e] hover:text-[#0f0e0c] transition-colors disabled:opacity-40"
               title="Refresh"
@@ -245,19 +192,6 @@ export default function AvailabilityCalendar() {
           </div>
         </div>
       </section>
-
-      {/* ── Placeholder notice ── */}
-      {isPlaceholder && (
-        <div className="bg-amber-50 border-b border-amber-200">
-          <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3">
-            <p className="font-inter text-xs text-amber-700">
-              <span className="font-semibold">iCal not yet connected for this listing.</span>{" "}
-              Add the Airbnb iCal URL to{" "}
-              <code className="bg-amber-100 px-1">app/api/availability/route.ts</code> to see live bookings.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* ── Calendar ── */}
       <section className="py-14 bg-white">

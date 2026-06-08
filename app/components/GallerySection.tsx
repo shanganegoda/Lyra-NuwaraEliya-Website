@@ -89,14 +89,14 @@ export default function GallerySection() {
       </section>
 
       {/* Filter tabs */}
-      <div className="bg-[#faf9f6] border-b border-[#e8e6e1] sticky top-[57px] z-40">
+      <div className="bg-[#faf9f6] border-b border-[#e8e6e1] sticky top-[77px] z-40">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="flex items-center gap-8 overflow-x-auto">
+          <div className="flex items-center gap-8 overflow-x-auto py-1">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActive(cat.id)}
-                className={`py-4 text-sm font-inter whitespace-nowrap border-b-2 transition-all duration-200 ${
+                className={`py-3 text-sm font-inter whitespace-nowrap border-b-2 transition-all duration-200 ${
                   active === cat.id
                     ? "border-[#a11d2b] text-[#0f0e0c]"
                     : "border-transparent text-[#a8a49e] hover:text-[#6b6861]"
