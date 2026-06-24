@@ -7,6 +7,9 @@ on:
     paths-ignore:
       - 'dist/**'  # Don't re-trigger when we commit dist
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
